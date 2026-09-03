@@ -1,0 +1,10 @@
+{
+  "description": "Designed for expectant mothers, this app offers essential pregnancy tracking tools, including gestational age, symptom logging, and contraction timing for a supportive experience.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

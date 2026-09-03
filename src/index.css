@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --color-background: #FDF6EF;
+  --color-foreground: #3D2C2C;
+  --color-card: #FFFAF6;
+  --color-card-foreground: #3D2C2C;
+  --color-primary: #C9776C;
+  --color-primary-foreground: #FFFAF6;
+  --color-secondary: #E8DFF5;
+  --color-secondary-foreground: #5A4878;
+  --color-muted: #F3EBE1;
+  --color-muted-foreground: #8C7060;
+  --color-accent: #B8A9C9;
+  --color-accent-foreground: #3D2C2C;
+  --color-border: #E8DDD3;
+  --color-ring: #C9776C;
+  --radius: 1.25rem;
+
+  --font-serif: 'DM Serif Display', serif;
+  --font-sans: 'Nunito', sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+* {
+  font-family: var(--font-sans);
+}
+
+h1, h2, .serif {
+  font-family: var(--font-serif);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+scrollbar-width: none;
