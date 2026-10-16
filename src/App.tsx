@@ -86,6 +86,124 @@ function formatInterval(ms: number): string {
   return m > 0 ? `${m}m ${s % 60}s` : `${s}s`;
 }
 
+// ─── Login ───────────────────────────────────────────────────────────────────
+function LoginScreen({ onLogin }: { onLogin: () => void }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (username.trim() === "admin" && password === "admin123") {
+      setError("");
+      onLogin();
+      return;
+    }
+
+    setError("Usuário ou senha incorretos. Tente novamente.");
+  };
+
+  return (
+    <div className="relative flex h-full flex-col overflow-hidden bg-background px-7 py-10">
+      <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-secondary/80" />
+      <div className="absolute -left-20 bottom-20 h-52 w-52 rounded-full bg-[#F3D5CF]/60" />
+
+      <div className="relative z-10 flex flex-1 flex-col">
+        <div className="flex flex-1 flex-col justify-center">
+          <div className="mb-8">
+            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-primary shadow-lg shadow-primary/20">
+              <svg
+                aria-hidden="true"
+                className="h-8 w-8 text-white"
+                fill="none"
+                viewBox="0 0 32 32"
+              >
+                <path
+                  d="M16 26c-1.8-4.5-6.2-7.2-11-7.2 2.2 5.6 6.1 8.4 11 8.4m0-1.2c1.8-4.5 6.2-7.2 11-7.2-2.2 5.6-6.1 8.4-11 8.4M16 25V12"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M16 13.2c-4.6-2.4-6.1-6.5-3.2-9.2 1.6.3 2.7 1.2 3.2 2.5.5-1.3 1.6-2.2 3.2-2.5 2.9 2.7 1.4 6.8-3.2 9.2Z"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+            </div>
+            <p className="mb-1 text-sm font-700 uppercase tracking-[0.18em] text-primary">
+              Mamãe em Flor
+            </p>
+            <h1 className="text-4xl leading-tight text-foreground">Bem-vinda de volta</h1>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
+              Entre para continuar acompanhando cada momento da sua jornada.
+            </p>
+          </div>
+
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-700 uppercase tracking-wide text-muted-foreground" htmlFor="username">
+                Usuário
+              </label>
+              <input
+                autoCapitalize="none"
+                autoComplete="username"
+                className="rounded-2xl border border-border bg-white px-5 py-4 text-base text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                id="username"
+                onChange={(event) => {
+                  setUsername(event.target.value);
+                  if (error) setError("");
+                }}
+                placeholder="Digite seu usuário"
+                type="text"
+                value={username}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-700 uppercase tracking-wide text-muted-foreground" htmlFor="password">
+                Senha
+              </label>
+              <input
+                autoComplete="current-password"
+                className="rounded-2xl border border-border bg-white px-5 py-4 text-base text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                id="password"
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  if (error) setError("");
+                }}
+                placeholder="Digite sua senha"
+                type="password"
+                value={password}
+              />
+            </div>
+
+            {error && (
+              <p className="rounded-2xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary" role="alert">
+                {error}
+              </p>
+            )}
+
+            <button
+              className="mt-2 w-full rounded-2xl bg-primary py-4 text-base font-700 text-white shadow-md shadow-primary/20 transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={!username.trim() || !password}
+              type="submit"
+            >
+              Entrar
+            </button>
+          </form>
+        </div>
+
+        <p className="relative text-center text-xs leading-relaxed text-muted-foreground">
+          Um espaço seguro e acolhedor para você e seu bebê.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Onboarding ──────────────────────────────────────────────────────────────
 function OnboardingScreen({ onComplete }: { onComplete: (name: string, dpp: string) => void }) {
   const [name, setName] = useState("");
@@ -161,7 +279,7 @@ function OnboardingScreen({ onComplete }: { onComplete: (name: string, dpp: stri
 }
 
 // ─── Home / Dashboard ────────────────────────────────────────────────────────
-function HomeScreen({ name, dpp }: { name: string; dpp: string }) {
+function HomeScreen({ name, dpp, onLogout }: { name: string; dpp: string; onLogout: () => void }) {
   const age = getGestationalAge(dpp);
   const baby = getBabySize(age.weeks);
   const dppDate = new Date(dpp);
@@ -183,7 +301,26 @@ function HomeScreen({ name, dpp }: { name: string; dpp: string }) {
     <div className="flex flex-col h-full overflow-y-auto bg-[#FDF6EF]">
       {/* Hero header */}
       <div className="bg-[#C9776C] px-6 pt-12 pb-8 rounded-b-[2.5rem]">
-        <p className="text-[#f5d0cb] text-sm font-500">Olá, {name} 👋</p>
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[#f5d0cb] text-sm font-500">Olá, {name} 👋</p>
+          <button
+            aria-label="Sair da conta"
+            className="flex items-center gap-1.5 rounded-xl bg-white/15 px-3 py-2 text-xs font-700 text-white transition-all hover:bg-white/20 active:scale-95"
+            onClick={onLogout}
+            type="button"
+          >
+            <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24">
+              <path
+                d="M9 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3m6-4 3-3m0 0-3-3m3 3H9"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+              />
+            </svg>
+            Sair
+          </button>
+        </div>
         <h1 className="text-white text-2xl mt-0.5 leading-tight" style={{ fontFamily: "'DM Serif Display', serif" }}>
           {trimester}
         </h1>
@@ -577,11 +714,24 @@ function BottomNav({ screen, setScreen }: { screen: Screen; setScreen: (s: Scree
 
 // ─── App Root ────────────────────────────────────────────────────────────────
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => localStorage.getItem("mamae-authenticated") === "true",
+  );
   const [userData, setUserData] = useState<{ name: string; dpp: string } | null>(() => {
     const stored = localStorage.getItem("mamae-user");
     return stored ? JSON.parse(stored) : null;
   });
   const [screen, setScreen] = useState<Screen>("home");
+
+  const handleLogin = () => {
+    localStorage.setItem("mamae-authenticated", "true");
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("mamae-authenticated");
+    setIsAuthenticated(false);
+  };
 
   const handleOnboardingComplete = (name: string, dpp: string) => {
     const data = { name, dpp };
@@ -589,6 +739,16 @@ export default function App() {
     setUserData(data);
     setScreen("home");
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex size-full items-center justify-center bg-background">
+        <div className="flex h-full w-full max-w-sm flex-col">
+          <LoginScreen onLogin={handleLogin} />
+        </div>
+      </div>
+    );
+  }
 
   if (!userData) {
     return (
@@ -604,7 +764,7 @@ export default function App() {
     <div className="size-full flex items-center justify-center bg-[#E8DDD3]">
       <div className="w-full max-w-sm h-full flex flex-col bg-[#FDF6EF] overflow-hidden shadow-2xl relative">
         <div className="flex-1 overflow-hidden">
-          {screen === "home" && <HomeScreen name={userData.name} dpp={userData.dpp} />}
+          {screen === "home" && <HomeScreen name={userData.name} dpp={userData.dpp} onLogout={handleLogout} />}
           {screen === "diary" && <DiaryScreen />}
           {screen === "timer" && <TimerScreen />}
         </div>
